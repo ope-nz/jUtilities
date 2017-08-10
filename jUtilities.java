@@ -93,6 +93,15 @@ public class jUtilities
 		return uuid.toString();	
 	}
 	
+	public String randomUUIDNoDashes()
+	{
+		String uuid = randomUUID();
+		uuid = uuid.replace("-", "");
+		uuid = uuid.replace("{", "");
+		uuid = uuid.replace("}", "");
+		return uuid;	
+	}	
+	
 	public String randomPasswordString(int Length ){
 	String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	SecureRandom rnd = new SecureRandom();
