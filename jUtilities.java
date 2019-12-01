@@ -59,7 +59,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 @Version(1.1f)
-@ShortName("jUtilities")
+@ShortName(&quot;jUtilities&quot;)
 
 public class jUtilities {
 	public void OpenAddressInBrowser(String paramString) {
@@ -109,18 +109,18 @@ public class jUtilities {
 
 	public String randomUUIDNoDashes() {
 		String uuid = randomUUID();
-		uuid = uuid.replace("-", "");
-		uuid = uuid.replace("{", "");
-		uuid = uuid.replace("}", "");
+		uuid = uuid.replace(&quot;-&quot;, &quot;&quot;);
+		uuid = uuid.replace(&quot;{&quot;, &quot;&quot;);
+		uuid = uuid.replace(&quot;}&quot;, &quot;&quot;);
 		return uuid;
 	}
 
 	public String randomPasswordString(int Length) {
-		String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		String AB = &quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;;
 		SecureRandom rnd = new SecureRandom();
 
 		StringBuilder sb = new StringBuilder(Length);
-		for (int i = 0; i < Length; i++)
+		for (int i = 0; i &lt; Length; i++)
 			sb.append(AB.charAt(rnd.nextInt(AB.length())));
 		return sb.toString();
 	}
@@ -128,33 +128,33 @@ public class jUtilities {
 	public String FileExt(String paramString) {
 		int i = paramString.lastIndexOf(File.separator);
 		int j;
-		if (((j = paramString.lastIndexOf(".")) > i ? 1 : 0) != 0) {
+		if (((j = paramString.lastIndexOf(&quot;.&quot;)) &gt; i ? 1 : 0) != 0) {
 			return paramString.substring(j);
 		}
-		return "";
+		return &quot;&quot;;
 	}
 
 	public String FileName(String paramString) {
 		int i;
-		if (((i = paramString.lastIndexOf(File.separator)) < 0 ? 1 : 0) != 0) {
+		if (((i = paramString.lastIndexOf(File.separator)) &lt; 0 ? 1 : 0) != 0) {
 			return paramString;
 		}
 		if (paramString.endsWith(File.separator)) {
-			return "";
+			return &quot;&quot;;
 		}
 		return paramString.substring(i + File.separator.length());
 	}
 
 	public String FileDir(String paramString) {
 		int i;
-		if (((i = paramString.lastIndexOf(File.separator)) < 0 ? 1 : 0) != 0) {
-			return "";
+		if (((i = paramString.lastIndexOf(File.separator)) &lt; 0 ? 1 : 0) != 0) {
+			return &quot;&quot;;
 		}
 		return paramString.substring(0, i);
 	}
 
 	public String JavaVersion() {
-		return System.getProperty("java.version");
+		return System.getProperty(&quot;java.version&quot;);
 	}
 
 	public String getHostAddress() {
@@ -168,7 +168,7 @@ public class jUtilities {
 
 	public String getExternalAddress() {
 		try {
-			URL url = new URL("http://checkip.amazonaws.com/");
+			URL url = new URL(&quot;http://checkip.amazonaws.com/&quot;);
 			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 			return br.readLine();
 		} catch (Exception e) {
@@ -182,7 +182,7 @@ public class jUtilities {
 			return localInetAddress.getHostName();
 		} catch (Exception e) {
 			Common.Log(e.toString());
-			return "";
+			return &quot;&quot;;
 		}
 	}
 
@@ -193,7 +193,7 @@ public class jUtilities {
 		} catch (Exception e) {
 			Common.Log(e.toString());
 		}
-		return "";
+		return &quot;&quot;;
 	}
 
 	public String getCanonicalHostNameFromIP(String IP) {
@@ -201,9 +201,9 @@ public class jUtilities {
 			InetAddress addr = InetAddress.getByName(IP);
 			return addr.getCanonicalHostName();
 		} catch (Exception e) {
-			Common.Log("ERROR: " + e.getMessage());
+			Common.Log(&quot;ERROR: &quot; + e.getMessage());
 		}
-		return "";
+		return &quot;&quot;;
 	}
 
 	public String getHostNameFromIP(String IP) {
@@ -211,14 +211,14 @@ public class jUtilities {
 			InetAddress addr = InetAddress.getByName(IP);
 			return addr.getHostName();
 		} catch (Exception e) {
-			Common.Log("ERROR: " + e.getMessage());
+			Common.Log(&quot;ERROR: &quot; + e.getMessage());
 		}
-		return "";
+		return &quot;&quot;;
 	}
 
 	public String MacAddressFromClient() {
-		String macAddress = "";
-		String str = "";
+		String macAddress = &quot;&quot;;
+		String str = &quot;&quot;;
 		try {
 			InetAddress localInetAddress = InetAddress.getLocalHost();
 
@@ -228,48 +228,48 @@ public class jUtilities {
 
 			int i = 0;
 			for (int m : arrayOfByte1) {
-				if (m < 0) {
+				if (m &lt; 0) {
 					m = 256 + m;
 				}
 				if (m == 0) {
-					str = str.concat("00");
+					str = str.concat(&quot;00&quot;);
 				}
-				if (m > 0) {
+				if (m &gt; 0) {
 					int n = m / 16;
 					if (n == 10) {
-						str = str.concat("A");
+						str = str.concat(&quot;A&quot;);
 					} else if (n == 11) {
-						str = str.concat("B");
+						str = str.concat(&quot;B&quot;);
 					} else if (n == 12) {
-						str = str.concat("C");
+						str = str.concat(&quot;C&quot;);
 					} else if (n == 13) {
-						str = str.concat("D");
+						str = str.concat(&quot;D&quot;);
 					} else if (n == 14) {
-						str = str.concat("E");
+						str = str.concat(&quot;E&quot;);
 					} else if (n == 15) {
-						str = str.concat("F");
+						str = str.concat(&quot;F&quot;);
 					} else {
 						str = str.concat(String.valueOf(n));
 					}
 					n = m % 16;
 					if (n == 10) {
-						str = str.concat("A");
+						str = str.concat(&quot;A&quot;);
 					} else if (n == 11) {
-						str = str.concat("B");
+						str = str.concat(&quot;B&quot;);
 					} else if (n == 12) {
-						str = str.concat("C");
+						str = str.concat(&quot;C&quot;);
 					} else if (n == 13) {
-						str = str.concat("D");
+						str = str.concat(&quot;D&quot;);
 					} else if (n == 14) {
-						str = str.concat("E");
+						str = str.concat(&quot;E&quot;);
 					} else if (n == 15) {
-						str = str.concat("F");
+						str = str.concat(&quot;F&quot;);
 					} else {
 						str = str.concat(String.valueOf(n));
 					}
 				}
-				if (i < arrayOfByte1.length - 1) {
-					str = str.concat("-");
+				if (i &lt; arrayOfByte1.length - 1) {
+					str = str.concat(&quot;-&quot;);
 				}
 				i++;
 			}
@@ -282,46 +282,46 @@ public class jUtilities {
 	}
 
 	public static String GetTimeStamp() {
-		String _day = "";
-		String _mon = "";
-		String _yr = "";
-		String _hr = "";
-		String _mi = "";
-		String _ss = "";
+		String _day = &quot;&quot;;
+		String _mon = &quot;&quot;;
+		String _yr = &quot;&quot;;
+		String _hr = &quot;&quot;;
+		String _mi = &quot;&quot;;
+		String _ss = &quot;&quot;;
 		long _now = 0L;
 
-		_day = "";
-		_mon = "";
-		_yr = "";
-		_hr = "";
-		_mi = "";
-		_ss = "";
+		_day = &quot;&quot;;
+		_mon = &quot;&quot;;
+		_yr = &quot;&quot;;
+		_hr = &quot;&quot;;
+		_mi = &quot;&quot;;
+		_ss = &quot;&quot;;
 
 		_now = anywheresoftware.b4a.keywords.Common.DateTime.getNow();
 
 		_day = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetDayOfMonth(_now));
 		if (_day.length() == 1)
-			_day = "0" + _day;
+			_day = &quot;0&quot; + _day;
 
 		_mon = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetMonth(_now));
 		if (_mon.length() == 1)
-			_mon = "0" + _mon;
+			_mon = &quot;0&quot; + _mon;
 
 		_yr = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetYear(_now));
 
 		_hr = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetHour(_now));
 		if (_hr.length() == 1)
-			_hr = "0" + _hr;
+			_hr = &quot;0&quot; + _hr;
 
 		_mi = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetMinute(_now));
 		if (_mi.length() == 1)
-			_mi = "0" + _mi;
+			_mi = &quot;0&quot; + _mi;
 
 		_ss = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetSecond(_now));
 		if (_ss.length() == 1)
-			_ss = "0" + _ss;
+			_ss = &quot;0&quot; + _ss;
 
-		return _yr + _mon + _day + "_" + _hr + _mi + "_" + _ss;
+		return _yr + _mon + _day + &quot;_&quot; + _hr + _mi + &quot;_&quot; + _ss;
 	}
 
 	public static int CountOccurences(String sPattern, String sText) {
@@ -343,8 +343,8 @@ public class jUtilities {
 		final int step7 = 1;
 		final int limit7 = (int) (_stextlength - _spatternlength);
 
-		for (_i = (int) (0); (step7 > 0 && _i <= limit7)
-				|| (step7 < 0 && _i >= limit7); _i = ((int) (0 + _i + step7))) {
+		for (_i = (int) (0); (step7 &gt; 0 &amp;&amp; _i &lt;= limit7)
+				|| (step7 &lt; 0 &amp;&amp; _i &gt;= limit7); _i = ((int) (0 + _i + step7))) {
 			if ((sPattern).equals(sText.substring(_i, (int) (_i + _spatternlength))))
 				_result = (int) (_result + 1);
 		}
@@ -354,14 +354,14 @@ public class jUtilities {
 
 	public static String Boolean2Required(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return " required";
-		return "";
+			return &quot; required&quot;;
+		return &quot;&quot;;
 	}
 
 	public static String Boolean2Text(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return "True";
-		return "False";
+			return &quot;True&quot;;
+		return &quot;False&quot;;
 	}
 
 	public static boolean Int2Boolean(int Input) {
@@ -372,14 +372,14 @@ public class jUtilities {
 
 	public static String ReverseBoolean2Required(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return "";
-		return " required";
+			return &quot;&quot;;
+		return &quot; required&quot;;
 	}
 
 	public static String ReverseBoolean2Text(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return "False";
-		return "True";
+			return &quot;False&quot;;
+		return &quot;True&quot;;
 	}
 
 	public String EncodeUrl(String Url, String CharSet)
@@ -409,11 +409,11 @@ public class jUtilities {
 		byte[] iv = new byte[16];
 		System.arraycopy(Data, 0, salt, 0, 8);
 		System.arraycopy(Data, 8, iv, 0, 16);
-		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA1&quot;);
 		KeySpec keySpec = new PBEKeySpec(Password.toCharArray(), salt, 1024, 128);
 		SecretKey tmp = factory.generateSecret(keySpec);
-		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), &quot;AES&quot;);
+		Cipher d = Cipher.getInstance(&quot;AES/CBC/PKCS5Padding&quot;);
 		d.init(2, secret, new IvParameterSpec(iv));
 		byte[] t = new byte[Data.length - 24];
 		System.arraycopy(Data, 24, t, 0, t.length);
@@ -435,11 +435,11 @@ public class jUtilities {
 		rnd.nextBytes(salt);
 		byte[] iv = new byte[16];
 		rnd.nextBytes(iv);
-		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA1&quot;);
 		KeySpec keySpec = new PBEKeySpec(Password.toCharArray(), salt, 1024, 128);
 		SecretKey tmp = factory.generateSecret(keySpec);
-		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), &quot;AES&quot;);
+		Cipher d = Cipher.getInstance(&quot;AES/CBC/PKCS5Padding&quot;);
 		d.init(1, secret, new IvParameterSpec(iv));
 		byte[] enc = d.doFinal(Data);
 		byte[] plain = new byte[enc.length + 24];
@@ -461,7 +461,7 @@ public class jUtilities {
 	public static boolean IsAdmin() {
 		String groups[] = (new com.sun.security.auth.module.NTSystem()).getGroupIDs();
 		for (String group : groups) {
-			if (group.equals("S-1-5-32-544"))
+			if (group.equals(&quot;S-1-5-32-544&quot;))
 				return true;
 		}
 		return false;
@@ -471,8 +471,8 @@ public class jUtilities {
 	 * public static boolean IsAdmin2(){ Preferences prefs =
 	 * Preferences.systemRoot(); PrintStream systemErr = System.err;
 	 * synchronized(systemErr){ // better synchroize to avoid problems with other
-	 * threads that access System.err System.setErr(null); try{ prefs.put("foo",
-	 * "bar"); // SecurityException on Windows prefs.remove("foo"); prefs.flush();
+	 * threads that access System.err System.setErr(null); try{ prefs.put(&quot;foo&quot;,
+	 * &quot;bar&quot;); // SecurityException on Windows prefs.remove(&quot;foo&quot;); prefs.flush();
 	 * // BackingStoreException on Linux return true; }catch(Exception e){ return
 	 * false; }finally{ System.setErr(systemErr); } } }
 	 */
@@ -485,7 +485,7 @@ public class jUtilities {
 			ZipFile zip = new ZipFile(file);
 			String newPath = extractFolder;
 
-			newPath = newPath.replaceAll(" - /", " - Blank/");
+			newPath = newPath.replaceAll(&quot; - /&quot;, &quot; - Blank/&quot;);
 
 			Common.Log(newPath);
 
@@ -500,16 +500,16 @@ public class jUtilities {
 
 				File destFile;
 
-				// if (currentEntry.endsWith(" - ")) currentEntry = currentEntry+"_";
+				// if (currentEntry.endsWith(&quot; - &quot;)) currentEntry = currentEntry+&quot;_&quot;;
 
-				currentEntry = currentEntry.replaceAll(" - /", " - Blank/");
+				currentEntry = currentEntry.replaceAll(&quot; - /&quot;, &quot; - Blank/&quot;);
 
 				Common.Log(currentEntry);
 
-				// if (currentEntry.endsWith(".json") || currentEntry.endsWith(".arc"))
+				// if (currentEntry.endsWith(&quot;.json&quot;) || currentEntry.endsWith(&quot;.arc&quot;))
 				// {
-				// URI outputURI = new URI(("file:///"+ newPath.replaceAll(" ",
-				// "%20").replaceAll("\\", "/") + "/" + currentEntry));
+				// URI outputURI = new URI((&quot;file:///&quot;+ newPath.replaceAll(&quot; &quot;,
+				// &quot;%20&quot;).replaceAll(&quot;\\&quot;, &quot;/&quot;) + &quot;/&quot; + currentEntry));
 				// destFile = new File(outputURI);
 				// }
 				// else
@@ -542,7 +542,7 @@ public class jUtilities {
 				}
 			}
 		} catch (Exception e) {
-			Common.Log("ERROR: " + e.getMessage());
+			Common.Log(&quot;ERROR: &quot; + e.getMessage());
 		}
 	}
 
