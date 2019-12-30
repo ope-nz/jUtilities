@@ -16,6 +16,11 @@ import java.net.UnknownHostException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.net.ssl.HttpsURLConnection;
+import java.security.cert.X509Certificate;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+
 import java.awt.Desktop;
 
 import java.io.File;
@@ -29,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 
 import java.util.UUID;
+import java.util.Date;
 
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -546,4 +552,27 @@ public class jUtilities {
 		}
 	}
 
+	public long getServerCertificateExpiry(String URL) throws Exception
+	{
+		URL destinationURL = new URL(URL);
+
+		HttpsURLConnection conn = (HttpsURLConnection) destinationURL.openConnection();
+		conn.connect();
+
+		Certificate[] certs = conn.getServerCertificates();
+		for (Certificate cert : certs)
+		{
+			if(cert instanceof X509Certificate)
+			{
+				X509Certificate x509cert = (X509Certificate) cert;				
+				Date date = x509cert.getNotAfter();
+				long epoch = date.getTime();
+
+				conn.disconnect();
+				return epoch;
+			}
+		}
+
+		return -1;
+	}	
 }
