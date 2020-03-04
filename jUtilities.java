@@ -17,9 +17,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.security.cert.X509Certificate;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 
 import java.awt.Desktop;
 
@@ -48,6 +45,10 @@ import java.security.spec.KeySpec;
 import java.security.ProtectionDomain;
 import java.security.CodeSource;
 import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.MessageDigest;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -574,5 +575,42 @@ public class jUtilities {
 		}
 
 		return -1;
-	}	
+	}
+
+	// Java method to create SHA-25 checksum
+    public String getSHA256Hash(String data) {
+        String result = null;
+        try {
+            MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
+            byte[] hash = digest.digest(data.getBytes(&quot;UTF-8&quot;));
+			
+			StringBuilder sb = new StringBuilder();
+			for (byte b : hash) {
+				sb.append(String.format(&quot;%02x&quot;, b));
+			}
+			return sb.toString();
+
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+ 
+    // Java method to create MD5 checksum
+    public String getMD5Hash(String data) {
+        String result = null;
+        try {
+            MessageDigest digest = MessageDigest.getInstance(&quot;MD5&quot;);
+            byte[] hash = digest.digest(data.getBytes(&quot;UTF-8&quot;));
+			
+			StringBuilder sb = new StringBuilder();
+			for (byte b : hash) {
+				sb.append(String.format(&quot;%02x&quot;, b));
+			}
+			return sb.toString();
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
 }
