@@ -390,7 +390,6 @@ public class jUtilities {
 	}
 
 	public String EncodeUrl(String Url, String CharSet)
-
 	{
 		try {
 			return URLEncoder.encode(Url, CharSet);
