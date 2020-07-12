@@ -6,6 +6,7 @@ import anywheresoftware.b4a.BA.DependsOn;
 import anywheresoftware.b4a.BA.ShortName;
 import anywheresoftware.b4a.BA.Version;
 import anywheresoftware.b4a.keywords.Common;
+import anywheresoftware.b4a.objects.collections.Map;
 
 import java.net.URI;
 import java.net.URL;
@@ -611,5 +612,31 @@ public class jUtilities {
             ex.printStackTrace();
         }
         return result;
-    }
+	}
+	
+	// Return the process id of the current process 
+	public long getJVMPID() {
+		String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+		return Long.parseLong(processName.split(&quot;@&quot;)[0]);
+	}
+
+	// Return uptime of the VM
+	public long getJVMUptime() {
+		return java.lang.management.ManagementFactory.getRuntimeMXBean().getUptime();
+	}
+
+	// Return uptime of the VM
+	public Map getJVMSystemProperties() {
+		java.util.Map&lt;String,String&gt; mSystemProperties = java.lang.management.ManagementFactory.getRuntimeMXBean().getSystemProperties();
+
+		Map mResult = new Map();
+		mResult.Initialize();
+		
+		for (java.util.Map.Entry&lt;String, String&gt; entry : mSystemProperties.entrySet())
+		{
+			mResult.Put(entry.getKey(), entry.getValue());
+		}
+		return mResult;
+	}
+
 }
