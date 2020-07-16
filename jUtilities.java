@@ -7,6 +7,7 @@ import anywheresoftware.b4a.BA.ShortName;
 import anywheresoftware.b4a.BA.Version;
 import anywheresoftware.b4a.keywords.Common;
 import anywheresoftware.b4a.objects.collections.Map;
+import anywheresoftware.b4a.objects.collections.List;
 
 import java.net.URI;
 import java.net.URL;
@@ -625,7 +626,7 @@ public class jUtilities {
 		return java.lang.management.ManagementFactory.getRuntimeMXBean().getUptime();
 	}
 
-	// Return uptime of the VM
+	// Return VM system properties
 	public Map getJVMSystemProperties() {
 		java.util.Map&lt;String,String&gt; mSystemProperties = java.lang.management.ManagementFactory.getRuntimeMXBean().getSystemProperties();
 
@@ -639,4 +640,23 @@ public class jUtilities {
 		return mResult;
 	}
 
+	// Return VM arguments
+	public List getJVMArguments() {
+		java.util.List&lt;String&gt; InputArguments = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments();
+
+		List L = new List();
+		L.Initialize();
+		
+		for (String InputArgument : InputArguments) {
+            L.Add(InputArgument);
+        }
+
+		return L;
+	}
+
+	// Runs the garbage collector.
+	public void JVMgc()
+	{
+		System.gc();
+	}
 }
