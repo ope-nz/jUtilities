@@ -34,6 +34,7 @@ import java.io.BufferedOutputStream;
 
 import java.util.UUID;
 import java.util.Date;
+import java.util.HashMap;
 
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -68,7 +69,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 @Version(1.1f)
-@ShortName(&quot;jUtilities&quot;)
+@ShortName("jUtilities")
 
 public class jUtilities {
 	public void OpenAddressInBrowser(String paramString) {
@@ -118,18 +119,18 @@ public class jUtilities {
 
 	public String randomUUIDNoDashes() {
 		String uuid = randomUUID();
-		uuid = uuid.replace(&quot;-&quot;, &quot;&quot;);
-		uuid = uuid.replace(&quot;{&quot;, &quot;&quot;);
-		uuid = uuid.replace(&quot;}&quot;, &quot;&quot;);
+		uuid = uuid.replace("-", "");
+		uuid = uuid.replace("{", "");
+		uuid = uuid.replace("}", "");
 		return uuid;
 	}
 
 	public String randomPasswordString(int Length) {
-		String AB = &quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;;
+		String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 		SecureRandom rnd = new SecureRandom();
 
 		StringBuilder sb = new StringBuilder(Length);
-		for (int i = 0; i &lt; Length; i++)
+		for (int i = 0; i < Length; i++)
 			sb.append(AB.charAt(rnd.nextInt(AB.length())));
 		return sb.toString();
 	}
@@ -137,33 +138,33 @@ public class jUtilities {
 	public String FileExt(String paramString) {
 		int i = paramString.lastIndexOf(File.separator);
 		int j;
-		if (((j = paramString.lastIndexOf(&quot;.&quot;)) &gt; i ? 1 : 0) != 0) {
+		if (((j = paramString.lastIndexOf(".")) > i ? 1 : 0) != 0) {
 			return paramString.substring(j);
 		}
-		return &quot;&quot;;
+		return "";
 	}
 
 	public String FileName(String paramString) {
 		int i;
-		if (((i = paramString.lastIndexOf(File.separator)) &lt; 0 ? 1 : 0) != 0) {
+		if (((i = paramString.lastIndexOf(File.separator)) < 0 ? 1 : 0) != 0) {
 			return paramString;
 		}
 		if (paramString.endsWith(File.separator)) {
-			return &quot;&quot;;
+			return "";
 		}
 		return paramString.substring(i + File.separator.length());
 	}
 
 	public String FileDir(String paramString) {
 		int i;
-		if (((i = paramString.lastIndexOf(File.separator)) &lt; 0 ? 1 : 0) != 0) {
-			return &quot;&quot;;
+		if (((i = paramString.lastIndexOf(File.separator)) < 0 ? 1 : 0) != 0) {
+			return "";
 		}
 		return paramString.substring(0, i);
 	}
 
 	public String JavaVersion() {
-		return System.getProperty(&quot;java.version&quot;);
+		return System.getProperty("java.version");
 	}
 
 	public String getHostAddress() {
@@ -177,7 +178,7 @@ public class jUtilities {
 
 	public String getExternalAddress() {
 		try {
-			URL url = new URL(&quot;http://checkip.amazonaws.com/&quot;);
+			URL url = new URL("http://checkip.amazonaws.com/");
 			BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 			return br.readLine();
 		} catch (Exception e) {
@@ -191,7 +192,7 @@ public class jUtilities {
 			return localInetAddress.getHostName();
 		} catch (Exception e) {
 			Common.Log(e.toString());
-			return &quot;&quot;;
+			return "";
 		}
 	}
 
@@ -202,7 +203,7 @@ public class jUtilities {
 		} catch (Exception e) {
 			Common.Log(e.toString());
 		}
-		return &quot;&quot;;
+		return "";
 	}
 
 	public String getCanonicalHostNameFromIP(String IP) {
@@ -210,9 +211,9 @@ public class jUtilities {
 			InetAddress addr = InetAddress.getByName(IP);
 			return addr.getCanonicalHostName();
 		} catch (Exception e) {
-			Common.Log(&quot;ERROR: &quot; + e.getMessage());
+			Common.Log("ERROR: " + e.getMessage());
 		}
-		return &quot;&quot;;
+		return "";
 	}
 
 	public String getHostNameFromIP(String IP) {
@@ -220,14 +221,14 @@ public class jUtilities {
 			InetAddress addr = InetAddress.getByName(IP);
 			return addr.getHostName();
 		} catch (Exception e) {
-			Common.Log(&quot;ERROR: &quot; + e.getMessage());
+			Common.Log("ERROR: " + e.getMessage());
 		}
-		return &quot;&quot;;
+		return "";
 	}
 
 	public String MacAddressFromClient() {
-		String macAddress = &quot;&quot;;
-		String str = &quot;&quot;;
+		String macAddress = "";
+		String str = "";
 		try {
 			InetAddress localInetAddress = InetAddress.getLocalHost();
 
@@ -237,48 +238,48 @@ public class jUtilities {
 
 			int i = 0;
 			for (int m : arrayOfByte1) {
-				if (m &lt; 0) {
+				if (m < 0) {
 					m = 256 + m;
 				}
 				if (m == 0) {
-					str = str.concat(&quot;00&quot;);
+					str = str.concat("00");
 				}
-				if (m &gt; 0) {
+				if (m > 0) {
 					int n = m / 16;
 					if (n == 10) {
-						str = str.concat(&quot;A&quot;);
+						str = str.concat("A");
 					} else if (n == 11) {
-						str = str.concat(&quot;B&quot;);
+						str = str.concat("B");
 					} else if (n == 12) {
-						str = str.concat(&quot;C&quot;);
+						str = str.concat("C");
 					} else if (n == 13) {
-						str = str.concat(&quot;D&quot;);
+						str = str.concat("D");
 					} else if (n == 14) {
-						str = str.concat(&quot;E&quot;);
+						str = str.concat("E");
 					} else if (n == 15) {
-						str = str.concat(&quot;F&quot;);
+						str = str.concat("F");
 					} else {
 						str = str.concat(String.valueOf(n));
 					}
 					n = m % 16;
 					if (n == 10) {
-						str = str.concat(&quot;A&quot;);
+						str = str.concat("A");
 					} else if (n == 11) {
-						str = str.concat(&quot;B&quot;);
+						str = str.concat("B");
 					} else if (n == 12) {
-						str = str.concat(&quot;C&quot;);
+						str = str.concat("C");
 					} else if (n == 13) {
-						str = str.concat(&quot;D&quot;);
+						str = str.concat("D");
 					} else if (n == 14) {
-						str = str.concat(&quot;E&quot;);
+						str = str.concat("E");
 					} else if (n == 15) {
-						str = str.concat(&quot;F&quot;);
+						str = str.concat("F");
 					} else {
 						str = str.concat(String.valueOf(n));
 					}
 				}
-				if (i &lt; arrayOfByte1.length - 1) {
-					str = str.concat(&quot;-&quot;);
+				if (i < arrayOfByte1.length - 1) {
+					str = str.concat("-");
 				}
 				i++;
 			}
@@ -291,46 +292,46 @@ public class jUtilities {
 	}
 
 	public static String GetTimeStamp() {
-		String _day = &quot;&quot;;
-		String _mon = &quot;&quot;;
-		String _yr = &quot;&quot;;
-		String _hr = &quot;&quot;;
-		String _mi = &quot;&quot;;
-		String _ss = &quot;&quot;;
+		String _day = "";
+		String _mon = "";
+		String _yr = "";
+		String _hr = "";
+		String _mi = "";
+		String _ss = "";
 		long _now = 0L;
 
-		_day = &quot;&quot;;
-		_mon = &quot;&quot;;
-		_yr = &quot;&quot;;
-		_hr = &quot;&quot;;
-		_mi = &quot;&quot;;
-		_ss = &quot;&quot;;
+		_day = "";
+		_mon = "";
+		_yr = "";
+		_hr = "";
+		_mi = "";
+		_ss = "";
 
 		_now = anywheresoftware.b4a.keywords.Common.DateTime.getNow();
 
 		_day = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetDayOfMonth(_now));
 		if (_day.length() == 1)
-			_day = &quot;0&quot; + _day;
+			_day = "0" + _day;
 
 		_mon = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetMonth(_now));
 		if (_mon.length() == 1)
-			_mon = &quot;0&quot; + _mon;
+			_mon = "0" + _mon;
 
 		_yr = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetYear(_now));
 
 		_hr = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetHour(_now));
 		if (_hr.length() == 1)
-			_hr = &quot;0&quot; + _hr;
+			_hr = "0" + _hr;
 
 		_mi = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetMinute(_now));
 		if (_mi.length() == 1)
-			_mi = &quot;0&quot; + _mi;
+			_mi = "0" + _mi;
 
 		_ss = BA.NumberToString(anywheresoftware.b4a.keywords.Common.DateTime.GetSecond(_now));
 		if (_ss.length() == 1)
-			_ss = &quot;0&quot; + _ss;
+			_ss = "0" + _ss;
 
-		return _yr + _mon + _day + &quot;_&quot; + _hr + _mi + &quot;_&quot; + _ss;
+		return _yr + _mon + _day + "_" + _hr + _mi + "_" + _ss;
 	}
 
 	public static int CountOccurences(String sPattern, String sText) {
@@ -352,8 +353,8 @@ public class jUtilities {
 		final int step7 = 1;
 		final int limit7 = (int) (_stextlength - _spatternlength);
 
-		for (_i = (int) (0); (step7 &gt; 0 &amp;&amp; _i &lt;= limit7)
-				|| (step7 &lt; 0 &amp;&amp; _i &gt;= limit7); _i = ((int) (0 + _i + step7))) {
+		for (_i = (int) (0); (step7 > 0 && _i <= limit7)
+				|| (step7 < 0 && _i >= limit7); _i = ((int) (0 + _i + step7))) {
 			if ((sPattern).equals(sText.substring(_i, (int) (_i + _spatternlength))))
 				_result = (int) (_result + 1);
 		}
@@ -363,14 +364,14 @@ public class jUtilities {
 
 	public static String Boolean2Required(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return &quot; required&quot;;
-		return &quot;&quot;;
+			return " required";
+		return "";
 	}
 
 	public static String Boolean2Text(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return &quot;True&quot;;
-		return &quot;False&quot;;
+			return "True";
+		return "False";
 	}
 
 	public static boolean Int2Boolean(int Input) {
@@ -381,14 +382,14 @@ public class jUtilities {
 
 	public static String ReverseBoolean2Required(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return &quot;&quot;;
-		return &quot; required&quot;;
+			return "";
+		return " required";
 	}
 
 	public static String ReverseBoolean2Text(boolean Input) {
 		if (Input == anywheresoftware.b4a.keywords.Common.True)
-			return &quot;False&quot;;
-		return &quot;True&quot;;
+			return "False";
+		return "True";
 	}
 
 	public String EncodeUrl(String Url, String CharSet)
@@ -417,11 +418,11 @@ public class jUtilities {
 		byte[] iv = new byte[16];
 		System.arraycopy(Data, 0, salt, 0, 8);
 		System.arraycopy(Data, 8, iv, 0, 16);
-		SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA1&quot;);
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 		KeySpec keySpec = new PBEKeySpec(Password.toCharArray(), salt, 1024, 128);
 		SecretKey tmp = factory.generateSecret(keySpec);
-		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), &quot;AES&quot;);
-		Cipher d = Cipher.getInstance(&quot;AES/CBC/PKCS5Padding&quot;);
+		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
+		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		d.init(2, secret, new IvParameterSpec(iv));
 		byte[] t = new byte[Data.length - 24];
 		System.arraycopy(Data, 24, t, 0, t.length);
@@ -443,11 +444,11 @@ public class jUtilities {
 		rnd.nextBytes(salt);
 		byte[] iv = new byte[16];
 		rnd.nextBytes(iv);
-		SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA1&quot;);
+		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 		KeySpec keySpec = new PBEKeySpec(Password.toCharArray(), salt, 1024, 128);
 		SecretKey tmp = factory.generateSecret(keySpec);
-		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), &quot;AES&quot;);
-		Cipher d = Cipher.getInstance(&quot;AES/CBC/PKCS5Padding&quot;);
+		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
+		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		d.init(1, secret, new IvParameterSpec(iv));
 		byte[] enc = d.doFinal(Data);
 		byte[] plain = new byte[enc.length + 24];
@@ -469,7 +470,7 @@ public class jUtilities {
 	public static boolean IsAdmin() {
 		String groups[] = (new com.sun.security.auth.module.NTSystem()).getGroupIDs();
 		for (String group : groups) {
-			if (group.equals(&quot;S-1-5-32-544&quot;))
+			if (group.equals("S-1-5-32-544"))
 				return true;
 		}
 		return false;
@@ -479,8 +480,8 @@ public class jUtilities {
 	 * public static boolean IsAdmin2(){ Preferences prefs =
 	 * Preferences.systemRoot(); PrintStream systemErr = System.err;
 	 * synchronized(systemErr){ // better synchroize to avoid problems with other
-	 * threads that access System.err System.setErr(null); try{ prefs.put(&quot;foo&quot;,
-	 * &quot;bar&quot;); // SecurityException on Windows prefs.remove(&quot;foo&quot;); prefs.flush();
+	 * threads that access System.err System.setErr(null); try{ prefs.put("foo",
+	 * "bar"); // SecurityException on Windows prefs.remove("foo"); prefs.flush();
 	 * // BackingStoreException on Linux return true; }catch(Exception e){ return
 	 * false; }finally{ System.setErr(systemErr); } } }
 	 */
@@ -493,7 +494,7 @@ public class jUtilities {
 			ZipFile zip = new ZipFile(file);
 			String newPath = extractFolder;
 
-			newPath = newPath.replaceAll(&quot; - /&quot;, &quot; - Blank/&quot;);
+			newPath = newPath.replaceAll(" - /", " - Blank/");
 
 			Common.Log(newPath);
 
@@ -508,16 +509,16 @@ public class jUtilities {
 
 				File destFile;
 
-				// if (currentEntry.endsWith(&quot; - &quot;)) currentEntry = currentEntry+&quot;_&quot;;
+				// if (currentEntry.endsWith(" - ")) currentEntry = currentEntry+"_";
 
-				currentEntry = currentEntry.replaceAll(&quot; - /&quot;, &quot; - Blank/&quot;);
+				currentEntry = currentEntry.replaceAll(" - /", " - Blank/");
 
 				Common.Log(currentEntry);
 
-				// if (currentEntry.endsWith(&quot;.json&quot;) || currentEntry.endsWith(&quot;.arc&quot;))
+				// if (currentEntry.endsWith(".json") || currentEntry.endsWith(".arc"))
 				// {
-				// URI outputURI = new URI((&quot;file:///&quot;+ newPath.replaceAll(&quot; &quot;,
-				// &quot;%20&quot;).replaceAll(&quot;\\&quot;, &quot;/&quot;) + &quot;/&quot; + currentEntry));
+				// URI outputURI = new URI(("file:///"+ newPath.replaceAll(" ",
+				// "%20").replaceAll("\\", "/") + "/" + currentEntry));
 				// destFile = new File(outputURI);
 				// }
 				// else
@@ -550,7 +551,7 @@ public class jUtilities {
 				}
 			}
 		} catch (Exception e) {
-			Common.Log(&quot;ERROR: &quot; + e.getMessage());
+			Common.Log("ERROR: " + e.getMessage());
 		}
 	}
 
@@ -582,12 +583,12 @@ public class jUtilities {
     public String getSHA256Hash(String data) {
         String result = null;
         try {
-            MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);
-            byte[] hash = digest.digest(data.getBytes(&quot;UTF-8&quot;));
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(data.getBytes("UTF-8"));
 			
 			StringBuilder sb = new StringBuilder();
 			for (byte b : hash) {
-				sb.append(String.format(&quot;%02x&quot;, b));
+				sb.append(String.format("%02x", b));
 			}
 			return sb.toString();
 
@@ -601,12 +602,12 @@ public class jUtilities {
     public String getMD5Hash(String data) {
         String result = null;
         try {
-            MessageDigest digest = MessageDigest.getInstance(&quot;MD5&quot;);
-            byte[] hash = digest.digest(data.getBytes(&quot;UTF-8&quot;));
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] hash = digest.digest(data.getBytes("UTF-8"));
 			
 			StringBuilder sb = new StringBuilder();
 			for (byte b : hash) {
-				sb.append(String.format(&quot;%02x&quot;, b));
+				sb.append(String.format("%02x", b));
 			}
 			return sb.toString();
         }catch(Exception ex) {
@@ -618,7 +619,7 @@ public class jUtilities {
 	// Return the process id of the current process 
 	public long getJVMPID() {
 		String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
-		return Long.parseLong(processName.split(&quot;@&quot;)[0]);
+		return Long.parseLong(processName.split("@")[0]);
 	}
 
 	// Return uptime of the VM
@@ -628,12 +629,12 @@ public class jUtilities {
 
 	// Return VM system properties
 	public Map getJVMSystemProperties() {
-		java.util.Map&lt;String,String&gt; mSystemProperties = java.lang.management.ManagementFactory.getRuntimeMXBean().getSystemProperties();
+		java.util.Map<String,String> mSystemProperties = java.lang.management.ManagementFactory.getRuntimeMXBean().getSystemProperties();
 
 		Map mResult = new Map();
 		mResult.Initialize();
 		
-		for (java.util.Map.Entry&lt;String, String&gt; entry : mSystemProperties.entrySet())
+		for (java.util.Map.Entry<String, String> entry : mSystemProperties.entrySet())
 		{
 			mResult.Put(entry.getKey(), entry.getValue());
 		}
@@ -642,7 +643,7 @@ public class jUtilities {
 
 	// Return VM arguments
 	public List getJVMArguments() {
-		java.util.List&lt;String&gt; InputArguments = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments();
+		java.util.List<String> InputArguments = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments();
 
 		List L = new List();
 		L.Initialize();
