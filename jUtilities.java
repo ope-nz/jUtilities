@@ -660,4 +660,20 @@ public class jUtilities {
 	{
 		System.gc();
 	}
+	
+	/**
+     * Tests if the String possibly represents a valid JSON String.<br>
+     * Valid JSON strings are:
+     * <ul>
+     * <li>"null"</li>
+     * <li>starts with "[" and ends with "]"</li>
+     * <li>starts with "{" and ends with "}"</li>
+     * </ul>
+     */
+    public static boolean mayBeJSON(String string) {
+        return string != null
+			&& string.length() > 0
+            && ("null".equals(string)			
+            || (string.startsWith("[") && string.endsWith("]")) || (string.startsWith("{") && string.endsWith("}")));
+    }
 }
