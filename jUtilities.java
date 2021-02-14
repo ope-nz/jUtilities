@@ -17,6 +17,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.Socket;
+import java.net.InetSocketAddress;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -224,6 +226,42 @@ public class jUtilities {
 			Common.Log("ERROR: " + e.getMessage());
 		}
 		return "";
+	}	
+
+	public boolean IsReachableHostName(String HostName, int timeOut)
+	{    
+		try
+		{
+			InetAddress inet;
+			inet = InetAddress.getByName(HostName);
+			if (inet.isReachable(timeOut)) return true;
+		}
+		catch (IOException e)
+		{
+			Common.Log("ERROR: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	public boolean IsReachableIP(String IP, int timeOut)
+	{
+		try
+		{
+			String[] arrIP = IP.split("\\.");
+			
+			if (arrIP.length == 4)
+			{
+				InetAddress inet;
+				inet = InetAddress.getByAddress(new byte[] {(byte)Integer.parseInt(arrIP[0]), (byte)Integer.parseInt(arrIP[1]), (byte)Integer.parseInt(arrIP[2]), (byte)Integer.parseInt(arrIP[3])});
+				if (inet.isReachable(timeOut)) return true;
+			}
+		}
+		catch (Exception e)
+		{
+			Common.Log("ERROR: " + e.getMessage());
+		}
+		
+		return false;
 	}
 
 	public String MacAddressFromClient() {
