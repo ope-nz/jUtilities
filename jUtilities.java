@@ -38,6 +38,7 @@ import java.io.BufferedOutputStream;
 import java.util.UUID;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
@@ -749,5 +750,30 @@ public class jUtilities {
 		}
 
 		return false;
+	}
+
+	public static String statusWindowsService(String ServiceName)
+	{
+		String Result = "NOT FOUND";
+
+		try {
+			Process process = Runtime.getRuntime().exec("sc query "+ServiceName);
+    		Scanner reader = new Scanner(process.getInputStream(), "UTF-8");
+			while(reader.hasNextLine())
+			{
+				String Line = reader.nextLine().trim();
+				if(Line.contains("STATE")){
+					Result = Line.substring(Line.lastIndexOf(" "));
+					//if(Line.contains("RUNNING")) Result = "RUNNING";
+					//if(Line.contains("STOPPED")) Result = "STOPPED";
+				}
+			}
+		}
+		catch(Exception ex)
+		{
+			Result = "ERROR";
+		}
+
+		return Result.trim();
 	}
 }
