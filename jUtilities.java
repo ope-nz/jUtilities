@@ -19,6 +19,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.Socket;
 import java.net.InetSocketAddress;
+import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -43,6 +44,9 @@ import java.util.Scanner;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -71,6 +75,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.json.JSONObject;
 
 @Version(1.1f)
 @ShortName("jUtilities")
@@ -695,6 +701,24 @@ public class jUtilities {
 		return L;
 	}
 
+	// Return a specific EnvironmentVariable
+	public String EnvironmentVariable(String Name) {
+		return System.getenv(Name);
+	}
+
+	// Return all EnvironmentVariables as a map
+	public Map getEnvironmentVariables() {
+		java.util.Map<String,String> env = System.getenv();
+
+		Map mResult = new Map();
+		mResult.Initialize();
+
+		for(String envName : env.keySet()){
+			mResult.Put(envName, env.get(envName));
+		}
+		return mResult;
+	}	
+
 	// Runs the garbage collector.
 	public void JVMgc()
 	{
@@ -775,5 +799,60 @@ public class jUtilities {
 		}
 
 		return Result.trim();
+	}
+
+	public static String ToPrettyPrintJSON(String jsonString,int Indent)
+	{
+		try
+		{
+			JSONObject json = new JSONObject(jsonString);
+			return json.toString(Indent);
+		}
+		catch(Exception ex)
+		{
+			return jsonString;
+		}		
+	}
+
+	public Map ReadPropertiesFile(String filename)
+	{
+		Map mResult = new Map();
+		mResult.Initialize();		
+		
+		try (InputStream input = new FileInputStream(filename))
+		{
+			Properties prop = new Properties();
+
+			if (input == null) return mResult;
+			prop.load(input);
+
+			// Java 8 , print key and values
+			prop.forEach((key, value) -> mResult.Put(key, value));
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		return mResult;
+	}
+
+	public List getJarContent(String jarPath)
+	{
+		List L = new List();
+		L.Initialize();
+
+		try {
+			JarFile jarFile = new JarFile(jarPath);
+    		Enumeration<JarEntry> e = jarFile.entries();
+    		while (e.hasMoreElements()) {
+      			JarEntry entry = (JarEntry)e.nextElement();
+      			L.Add(entry.getName());
+    	}
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return L;
 	}
 }
