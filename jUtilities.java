@@ -11,6 +11,7 @@ import anywheresoftware.b4a.objects.collections.List;
 
 import java.net.URI;
 import java.net.URL;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -19,6 +20,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.Socket;
 import java.net.InetSocketAddress;
+import java.net.InterfaceAddress;
 import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -335,6 +337,33 @@ public class jUtilities {
 			str = localSocketException.getMessage();
 		}
 		return str;
+	}
+
+	public String GetDefaultGateway()
+	{
+		try {
+			Process process = Runtime.getRuntime().exec("nslookup localhost");
+
+			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream())))
+			{
+				String line;
+				while ((line = bufferedReader.readLine()) != null)
+				{
+					line = line.trim().toLowerCase();
+					if (line.startsWith("server:") || line.startsWith("address:"))
+					{
+						String address = line.substring(line.indexOf(":") + 1).trim();
+						if (address.contains(".")) return address;
+					}
+
+					if (line.length() == 0) return "";
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 
 	public static String GetTimeStamp() {
@@ -855,4 +884,6 @@ public class jUtilities {
 
 		return L;
 	}
+
+	
 }
