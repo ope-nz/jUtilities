@@ -236,42 +236,53 @@ public class jUtilities {
 			Common.Log("ERROR: " + e.getMessage());
 		}
 		return "";
-	}	
+	}
 
-	public boolean IsReachableHostName(String HostName, int timeOut)
-	{    
-		try
-		{
+	public boolean IsReachableHostName(String HostName, int timeOut) {
+		try {
 			InetAddress inet;
 			inet = InetAddress.getByName(HostName);
-			if (inet.isReachable(timeOut)) return true;
-		}
-		catch (IOException e)
-		{
+			if (inet.isReachable(timeOut))
+				return true;
+		} catch (IOException e) {
 			Common.Log("ERROR: " + e.getMessage());
 		}
 		return false;
 	}
-	
-	public boolean IsReachableIP(String IP, int timeOut)
-	{
-		try
-		{
+
+	public boolean IsReachableIP(String IP, int timeOut) {
+		try {
 			String[] arrIP = IP.split("\\.");
-			
-			if (arrIP.length == 4)
-			{
+
+			if (arrIP.length == 4) {
 				InetAddress inet;
-				inet = InetAddress.getByAddress(new byte[] {(byte)Integer.parseInt(arrIP[0]), (byte)Integer.parseInt(arrIP[1]), (byte)Integer.parseInt(arrIP[2]), (byte)Integer.parseInt(arrIP[3])});
-				if (inet.isReachable(timeOut)) return true;
+				inet = InetAddress
+						.getByAddress(new byte[] { (byte) Integer.parseInt(arrIP[0]), (byte) Integer.parseInt(arrIP[1]),
+								(byte) Integer.parseInt(arrIP[2]), (byte) Integer.parseInt(arrIP[3]) });
+				if (inet.isReachable(timeOut))
+					return true;
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			Common.Log("ERROR: " + e.getMessage());
 		}
-		
+
 		return false;
+	}
+
+	public Long PingPort(String address, int port, int timeout) {
+		Long t1 = System.currentTimeMillis();
+
+		Socket psocket = new Socket();
+		try {
+			// Connects this socket to the server with a specified timeout value.
+			psocket.connect(new InetSocketAddress(address, port), timeout);
+			psocket.close();
+		} catch (Exception e) {
+			Common.Log("ERROR: Ping timeout");
+			// return -1L;
+		}
+
+		return System.currentTimeMillis() - t1;
 	}
 
 	public String MacAddressFromClient() {
@@ -339,24 +350,22 @@ public class jUtilities {
 		return str;
 	}
 
-	public String GetDefaultGateway()
-	{
+	public String GetDefaultGateway() {
 		try {
 			Process process = Runtime.getRuntime().exec("nslookup localhost");
 
-			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream())))
-			{
+			try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 				String line;
-				while ((line = bufferedReader.readLine()) != null)
-				{
+				while ((line = bufferedReader.readLine()) != null) {
 					line = line.trim().toLowerCase();
-					if (line.startsWith("server:") || line.startsWith("address:"))
-					{
+					if (line.startsWith("server:") || line.startsWith("address:")) {
 						String address = line.substring(line.indexOf(":") + 1).trim();
-						if (address.contains(".")) return address;
+						if (address.contains("."))
+							return address;
 					}
 
-					if (line.length() == 0) return "";
+					if (line.length() == 0)
+						return "";
 				}
 			}
 		} catch (Exception e) {
@@ -467,8 +476,7 @@ public class jUtilities {
 		return "True";
 	}
 
-	public String EncodeUrl(String Url, String CharSet)
-	{
+	public String EncodeUrl(String Url, String CharSet) {
 		try {
 			return URLEncoder.encode(Url, CharSet);
 		} catch (Exception e) {
@@ -540,6 +548,27 @@ public class jUtilities {
 
 	public byte[] DecodeBase64(String Data) throws IOException {
 		return Base64.decode(Data);
+	}
+
+	public String StringToHex(String Data) {
+		StringBuffer sb = new StringBuffer();
+		char ch[] = Data.toCharArray();
+		for (int i = 0; i < ch.length; i++) {
+			String hexString = Integer.toHexString(ch[i]);
+			sb.append(hexString);
+		}
+		return sb.toString().toUpperCase();
+	}
+
+	public String HexToString(String Data) {
+		String result = new String();
+		char[] charArray = Data.toCharArray();
+		for (int i = 0; i < charArray.length; i = i + 2) {
+			String st = "" + charArray[i] + "" + charArray[i + 1];
+			char ch = (char) Integer.parseInt(st, 16);
+			result = result + ch;
+		}
+		return result;
 	}
 
 	public static boolean IsAdmin() {
@@ -630,19 +659,16 @@ public class jUtilities {
 		}
 	}
 
-	public long getServerCertificateExpiry(String URL) throws Exception
-	{
+	public long getServerCertificateExpiry(String URL) throws Exception {
 		URL destinationURL = new URL(URL);
 
 		HttpsURLConnection conn = (HttpsURLConnection) destinationURL.openConnection();
 		conn.connect();
 
 		Certificate[] certs = conn.getServerCertificates();
-		for (Certificate cert : certs)
-		{
-			if(cert instanceof X509Certificate)
-			{
-				X509Certificate x509cert = (X509Certificate) cert;				
+		for (Certificate cert : certs) {
+			if (cert instanceof X509Certificate) {
+				X509Certificate x509cert = (X509Certificate) cert;
 				Date date = x509cert.getNotAfter();
 				long epoch = date.getTime();
 
@@ -655,43 +681,43 @@ public class jUtilities {
 	}
 
 	// Java method to create SHA-25 checksum
-    public String getSHA256Hash(String data) {
-        String result = null;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(data.getBytes("UTF-8"));
-			
+	public String getSHA256Hash(String data) {
+		String result = null;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			byte[] hash = digest.digest(data.getBytes("UTF-8"));
+
 			StringBuilder sb = new StringBuilder();
 			for (byte b : hash) {
 				sb.append(String.format("%02x", b));
 			}
 			return sb.toString();
 
-        }catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return result;
-    }
- 
-    // Java method to create MD5 checksum
-    public String getMD5Hash(String data) {
-        String result = null;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            byte[] hash = digest.digest(data.getBytes("UTF-8"));
-			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return result;
+	}
+
+	// Java method to create MD5 checksum
+	public String getMD5Hash(String data) {
+		String result = null;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			byte[] hash = digest.digest(data.getBytes("UTF-8"));
+
 			StringBuilder sb = new StringBuilder();
 			for (byte b : hash) {
 				sb.append(String.format("%02x", b));
 			}
 			return sb.toString();
-        }catch(Exception ex) {
-            ex.printStackTrace();
-        }
-        return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return result;
 	}
-	
-	// Return the process id of the current process 
+
+	// Return the process id of the current process
 	public long getJVMPID() {
 		String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
 		return Long.parseLong(processName.split("@")[0]);
@@ -704,13 +730,13 @@ public class jUtilities {
 
 	// Return VM system properties
 	public Map getJVMSystemProperties() {
-		java.util.Map<String,String> mSystemProperties = java.lang.management.ManagementFactory.getRuntimeMXBean().getSystemProperties();
+		java.util.Map<String, String> mSystemProperties = java.lang.management.ManagementFactory.getRuntimeMXBean()
+				.getSystemProperties();
 
 		Map mResult = new Map();
 		mResult.Initialize();
-		
-		for (java.util.Map.Entry<String, String> entry : mSystemProperties.entrySet())
-		{
+
+		for (java.util.Map.Entry<String, String> entry : mSystemProperties.entrySet()) {
 			mResult.Put(entry.getKey(), entry.getValue());
 		}
 		return mResult;
@@ -718,14 +744,15 @@ public class jUtilities {
 
 	// Return VM arguments
 	public List getJVMArguments() {
-		java.util.List<String> InputArguments = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments();
+		java.util.List<String> InputArguments = java.lang.management.ManagementFactory.getRuntimeMXBean()
+				.getInputArguments();
 
 		List L = new List();
 		L.Initialize();
-		
+
 		for (String InputArgument : InputArguments) {
-            L.Add(InputArgument);
-        }
+			L.Add(InputArgument);
+		}
 
 		return L;
 	}
@@ -737,153 +764,140 @@ public class jUtilities {
 
 	// Return all EnvironmentVariables as a map
 	public Map getEnvironmentVariables() {
-		java.util.Map<String,String> env = System.getenv();
+		java.util.Map<String, String> env = System.getenv();
 
 		Map mResult = new Map();
 		mResult.Initialize();
 
-		for(String envName : env.keySet()){
+		for (String envName : env.keySet()) {
 			mResult.Put(envName, env.get(envName));
 		}
 		return mResult;
-	}	
+	}
 
 	// Runs the garbage collector.
-	public void JVMgc()
-	{
+	public void JVMgc() {
 		System.gc();
 	}
-	
+
 	/**
-     * Tests if the String possibly represents a valid JSON String.<br>
-     * Valid JSON strings are:
-     * <ul>
-     * <li>"null"</li>
-     * <li>starts with "[" and ends with "]"</li>
-     * <li>starts with "{" and ends with "}"</li>
-     * </ul>
-     */
-    public static boolean mayBeJSON(String string) {
-        return string != null
-			&& string.length() > 0
-            && ("null".equals(string)			
-            || (string.startsWith("[") && string.endsWith("]")) || (string.startsWith("{") && string.endsWith("}")));
+	 * Tests if the String possibly represents a valid JSON String.<br>
+	 * Valid JSON strings are:
+	 * <ul>
+	 * <li>"null"</li>
+	 * <li>starts with "[" and ends with "]"</li>
+	 * <li>starts with "{" and ends with "}"</li>
+	 * </ul>
+	 */
+	public static boolean mayBeJSON(String string) {
+		return string != null && string.length() > 0
+				&& ("null".equals(string) || (string.startsWith("[") && string.endsWith("]"))
+						|| (string.startsWith("{") && string.endsWith("}")));
 	}
-	
-	public static boolean mayBeBinary(String FilePath)
-	{
+
+	public static boolean mayBeBinary(String FilePath) {
 		try {
 			FileInputStream in = new FileInputStream(FilePath);
 			int size = in.available();
-			if(size > 1024) size = 1024;
+			if (size > 1024)
+				size = 1024;
 			byte[] data = new byte[size];
 			in.read(data);
 			in.close();
-		
+
 			int ascii = 0;
 			int other = 0;
-		
-			for(int i = 0; i < data.length; i++) {
+
+			for (int i = 0; i < data.length; i++) {
 				byte b = data[i];
-				if( b < 0x09 ) return true;
-		
-				if( b == 0x09 || b == 0x0A || b == 0x0C || b == 0x0D ) ascii++;
-				else if( b >= 0x20  &&  b <= 0x7E ) ascii++;
-				else other++;
+				if (b < 0x09)
+					return true;
+
+				if (b == 0x09 || b == 0x0A || b == 0x0C || b == 0x0D)
+					ascii++;
+				else if (b >= 0x20 && b <= 0x7E)
+					ascii++;
+				else
+					other++;
 			}
-		
-			if( other == 0 ) return false;
-		
+
+			if (other == 0)
+				return false;
+
 			return 100 * other / (ascii + other) > 95;
 
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 
 		return false;
 	}
 
-	public static String statusWindowsService(String ServiceName)
-	{
+	public static String statusWindowsService(String ServiceName) {
 		String Result = "NOT FOUND";
 
 		try {
-			Process process = Runtime.getRuntime().exec("sc query "+ServiceName);
-    		Scanner reader = new Scanner(process.getInputStream(), "UTF-8");
-			while(reader.hasNextLine())
-			{
+			Process process = Runtime.getRuntime().exec("sc query " + ServiceName);
+			Scanner reader = new Scanner(process.getInputStream(), "UTF-8");
+			while (reader.hasNextLine()) {
 				String Line = reader.nextLine().trim();
-				if(Line.contains("STATE")){
+				if (Line.contains("STATE")) {
 					Result = Line.substring(Line.lastIndexOf(" "));
-					//if(Line.contains("RUNNING")) Result = "RUNNING";
-					//if(Line.contains("STOPPED")) Result = "STOPPED";
+					// if(Line.contains("RUNNING")) Result = "RUNNING";
+					// if(Line.contains("STOPPED")) Result = "STOPPED";
 				}
 			}
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			Result = "ERROR";
 		}
 
 		return Result.trim();
 	}
 
-	public static String ToPrettyPrintJSON(String jsonString,int Indent)
-	{
-		try
-		{
+	public static String ToPrettyPrintJSON(String jsonString, int Indent) {
+		try {
 			JSONObject json = new JSONObject(jsonString);
 			return json.toString(Indent);
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			return jsonString;
-		}		
+		}
 	}
 
-	public Map ReadPropertiesFile(String filename)
-	{
+	public Map ReadPropertiesFile(String filename) {
 		Map mResult = new Map();
-		mResult.Initialize();		
-		
-		try (InputStream input = new FileInputStream(filename))
-		{
+		mResult.Initialize();
+
+		try (InputStream input = new FileInputStream(filename)) {
 			Properties prop = new Properties();
 
-			if (input == null) return mResult;
+			if (input == null)
+				return mResult;
 			prop.load(input);
 
 			// Java 8 , print key and values
 			prop.forEach((key, value) -> mResult.Put(key, value));
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return mResult;
 	}
 
-	public List getJarContent(String jarPath)
-	{
+	public List getJarContent(String jarPath) {
 		List L = new List();
 		L.Initialize();
 
 		try {
 			JarFile jarFile = new JarFile(jarPath);
-    		Enumeration<JarEntry> e = jarFile.entries();
-    		while (e.hasMoreElements()) {
-      			JarEntry entry = (JarEntry)e.nextElement();
-      			L.Add(entry.getName());
-    	}
-		}
-		catch (Exception ex) {
+			Enumeration<JarEntry> e = jarFile.entries();
+			while (e.hasMoreElements()) {
+				JarEntry entry = (JarEntry) e.nextElement();
+				L.Add(entry.getName());
+			}
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 
 		return L;
 	}
 
-	
 }
