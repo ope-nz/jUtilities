@@ -25,6 +25,10 @@ import java.util.Properties;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import javax.xml.XMLConstants;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+
 import java.awt.Desktop;
 
 import java.io.File;
@@ -37,6 +41,8 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import java.util.UUID;
 import java.util.Date;
@@ -267,6 +273,18 @@ public class jUtilities {
 		}
 
 		return false;
+	}
+
+	public Boolean TestPort(String address, int port, int timeout) {
+		Socket psocket = new Socket();
+		try {
+			// Connects this socket to the server with a specified timeout value.
+			psocket.connect(new InetSocketAddress(address, port), timeout);
+			psocket.close();
+			return true;
+		} catch (Exception e) {
+			return false;			
+		}
 	}
 
 	public Long PingPort(String address, int port, int timeout) {
@@ -860,6 +878,24 @@ public class jUtilities {
 			return json.toString(Indent);
 		} catch (Exception ex) {
 			return jsonString;
+		}
+	}
+
+	public static String ToPrettyPrintXML(String xmlString, int Indent) {
+		try {
+			Source xmlInput = new StreamSource(new StringReader(xmlString));
+			StringWriter stringWriter = new StringWriter();
+			StreamResult xmlOutput = new StreamResult(stringWriter);
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			transformerFactory.setAttribute("indent-number", Indent);
+			//transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			//transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			Transformer transformer = transformerFactory.newTransformer(); 
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.transform(xmlInput, xmlOutput);
+			return xmlOutput.getWriter().toString();
+		} catch (Exception e) {
+			throw new RuntimeException(e); // simple exception handling, please review it
 		}
 	}
 
