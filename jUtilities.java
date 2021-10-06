@@ -23,6 +23,8 @@ import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
 import java.util.Properties;
 
+import java.text.Normalizer;
+
 import javax.net.ssl.HttpsURLConnection;
 
 import javax.xml.XMLConstants;
@@ -936,4 +938,15 @@ public class jUtilities {
 		return L;
 	}
 
+	
+
+	public static String FlattenToAscii(String string)
+	{
+		StringBuilder sb = new StringBuilder(string.length());
+		string = Normalizer.normalize(string, Normalizer.Form.NFD);
+		for (char c : string.toCharArray()) {
+			if (c <= '\u007F') sb.append(c);
+		}
+		return sb.toString();
+	}
 }
