@@ -524,8 +524,8 @@ public class jUtilities {
 		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 		KeySpec keySpec = new PBEKeySpec(Password.toCharArray(), salt, 1024, 128);
 		SecretKey tmp = factory.generateSecret(keySpec);
-		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES"); 
+		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Should use AES/GCM/NoPadding
 		d.init(2, secret, new IvParameterSpec(iv));
 		byte[] t = new byte[Data.length - 24];
 		System.arraycopy(Data, 24, t, 0, t.length);
@@ -551,7 +551,7 @@ public class jUtilities {
 		KeySpec keySpec = new PBEKeySpec(Password.toCharArray(), salt, 1024, 128);
 		SecretKey tmp = factory.generateSecret(keySpec);
 		SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		Cipher d = Cipher.getInstance("AES/CBC/PKCS5Padding"); // Should use AES/GCM/NoPadding
 		d.init(1, secret, new IvParameterSpec(iv));
 		byte[] enc = d.doFinal(Data);
 		byte[] plain = new byte[enc.length + 24];
