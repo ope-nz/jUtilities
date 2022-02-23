@@ -610,6 +610,10 @@ public class jUtilities {
 	 * false; }finally{ System.setErr(systemErr); } } }
 	 */
 
+	public static boolean IsWindows(){
+		return System.getProperty("os.name").toLowerCase().contains("windows");
+	}
+
 	public void extractFolder(String zipFile, String extractFolder) {
 		try {
 			int BUFFER = 2048;
