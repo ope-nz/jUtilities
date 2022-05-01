@@ -953,4 +953,18 @@ public class jUtilities {
 		}
 		return sb.toString();
 	}
+	
+	
+	  public static String hexConvert(byte[] buf)
+	  {
+		if (buf == null) return null;
+		int length = buf.length;		   
+        StringBuffer stringBuffer = new StringBuffer(2 * length);
+        for (byte b1 = 0; b1 < length; ) {
+           stringBuffer.append("0123456789ABCDEF".charAt((buf[b1] & 0xF0) >> 4));
+           stringBuffer.append("0123456789ABCDEF".charAt(buf[b1] & 0xF));
+		   b1++; 
+    }
+	return stringBuffer.toString();
+    }
 }
