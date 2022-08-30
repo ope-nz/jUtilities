@@ -572,22 +572,36 @@ public class jUtilities {
 
 	public String StringToHex(String Data) {
 		StringBuffer sb = new StringBuffer();
-		char ch[] = Data.toCharArray();
-		for (int i = 0; i < ch.length; i++) {
-			String hexString = Integer.toHexString(ch[i]);
-			sb.append(hexString);
+		
+		try{
+			char ch[] = Data.toCharArray();
+			for (int i = 0; i < ch.length; i++) {
+				String hexString = Integer.toHexString(ch[i]);
+				sb.append(hexString);
+			}
 		}
+		catch (Exception e){
+			Common.Log("ERROR: " + e.getMessage());
+		}
+		
 		return sb.toString().toUpperCase();
 	}
 
 	public String HexToString(String Data) {
 		String result = new String();
-		char[] charArray = Data.toCharArray();
-		for (int i = 0; i < charArray.length; i = i + 2) {
-			String st = "" + charArray[i] + "" + charArray[i + 1];
-			char ch = (char) Integer.parseInt(st, 16);
-			result = result + ch;
+		
+		try{
+			char[] charArray = Data.toCharArray();
+			for (int i = 0; i < charArray.length; i = i + 2) {
+				String st = "" + charArray[i] + "" + charArray[i + 1];
+				char ch = (char) Integer.parseInt(st, 16);
+				result = result + ch;
+			}
 		}
+		catch (Exception e){
+			Common.Log("ERROR: " + e.getMessage());
+		}		
+		
 		return result;
 	}
 
