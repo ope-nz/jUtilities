@@ -698,21 +698,24 @@ public class jUtilities {
 	}
 
 	public long getServerCertificateExpiry(String URL) throws Exception {
-		URL destinationURL = new URL(URL);
+		try {
+			URL destinationURL = new URL(URL);
 
-		HttpsURLConnection conn = (HttpsURLConnection) destinationURL.openConnection();
-		conn.connect();
+			HttpsURLConnection conn = (HttpsURLConnection) destinationURL.openConnection();
+			conn.connect();
 
-		Certificate[] certs = conn.getServerCertificates();
-		for (Certificate cert : certs) {
-			if (cert instanceof X509Certificate) {
-				X509Certificate x509cert = (X509Certificate) cert;
-				Date date = x509cert.getNotAfter();
-				long epoch = date.getTime();
-
-				conn.disconnect();
-				return epoch;
+			Certificate[] certs = conn.getServerCertificates();
+			for (Certificate cert : certs) {
+				if (cert instanceof X509Certificate) {
+					X509Certificate x509cert = (X509Certificate) cert;
+					Date date = x509cert.getNotAfter();
+					long epoch = date.getTime();
+					conn.disconnect();
+					return epoch;
+				}
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 
 		return -1;
