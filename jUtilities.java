@@ -21,9 +21,10 @@ import java.net.URLEncoder;
 import java.net.Socket;
 import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
-import java.util.Properties;
 
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -45,18 +46,30 @@ import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import java.util.UUID;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
-
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Locale;
+import java.util.Base64;
+
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -66,15 +79,17 @@ import java.security.spec.KeySpec;
 import java.security.ProtectionDomain;
 import java.security.CodeSource;
 import java.security.SecureRandom;
+import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.MessageDigest;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.CopyOption;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.nio.file.attribute.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -86,12 +101,11 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.json.JSONObject;
-
-@Version(1.1f)
+@Version(1.3f)
 @ShortName("jUtilities")
 
 public class jUtilities {
+	// Opens an address in the default browser
 	public void OpenAddressInBrowser(String paramString) {
 		try {
 			Desktop localDesktop = Desktop.getDesktop();
@@ -101,6 +115,7 @@ public class jUtilities {
 		}
 	}
 
+	// Sleep for X milliseconds
 	public void Sleep(int milliseconds) {
 		try {
 			Thread.sleep(milliseconds);
@@ -277,17 +292,15 @@ public class jUtilities {
 		return false;
 	}
 
-	public Boolean TestPort(String address, int port, int timeout) {
-		Socket psocket = new Socket();
-		try {
-			// Connects this socket to the server with a specified timeout value.
-			psocket.connect(new InetSocketAddress(address, port), timeout);
-			psocket.close();
-			return true;
-		} catch (Exception e) {
-			return false;			
-		}
-	}
+	public static boolean isPortInUse(String host, int port, int timeout) {
+        try (Socket socket = new Socket()) {
+            InetSocketAddress socketAddress = new InetSocketAddress(host, port);
+            socket.connect(socketAddress, timeout);
+            return true; // Port is in use
+        } catch (Exception e) {
+            return false; // Port is available or an error occurred
+        }
+    }
 
 	public Long PingPort(String address, int port, int timeout) {
 		Long t1 = System.currentTimeMillis();
@@ -563,11 +576,13 @@ public class jUtilities {
 	}
 
 	public String EncodeBase64(byte[] Data) {
-		return Base64.encodeBytes(Data);
+		//return Base64.encodeBytes(Data);
+		return Base64.getEncoder().encodeToString(Data);
 	}
 
 	public byte[] DecodeBase64(String Data) throws IOException {
-		return Base64.decode(Data);
+		//return Base64.decode(Data);
+		return Base64.getDecoder().decode(Data);
 	}
 
 	public String StringToHex(String Data) {
@@ -835,44 +850,16 @@ public class jUtilities {
 				&& ("null".equals(string) || (string.startsWith("[") && string.endsWith("]"))
 						|| (string.startsWith("{") && string.endsWith("}")));
 	}
-
-	public static boolean mayBeBinary(String FilePath) {
-		try {
-			FileInputStream in = new FileInputStream(FilePath);
-			int size = in.available();
-			if (size > 1024)
-				size = 1024;
-			byte[] data = new byte[size];
-			in.read(data);
-			in.close();
-
-			int ascii = 0;
-			int other = 0;
-
-			for (int i = 0; i < data.length; i++) {
-				byte b = data[i];
-				if (b < 0x09)
-					return true;
-
-				if (b == 0x09 || b == 0x0A || b == 0x0C || b == 0x0D)
-					ascii++;
-				else if (b >= 0x20 && b <= 0x7E)
-					ascii++;
-				else
-					other++;
-			}
-
-			if (other == 0)
-				return false;
-
-			return 100 * other / (ascii + other) > 95;
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return false;
-	}
+	
+	public static boolean mayBeBinary(byte[] data) {
+        for (byte b : data) {
+            // Check if the byte falls outside the range of printable ASCII characters
+            if (b < 32 || b > 126) {
+                return true; // Byte is outside the ASCII range, indicating binary data
+            }
+        }
+        return false; // All bytes fall within the ASCII range, indicating ASCII characters
+    }
 
 	public static String statusWindowsService(String ServiceName) {
 		String Result = "NOT FOUND";
@@ -893,15 +880,6 @@ public class jUtilities {
 		}
 
 		return Result.trim();
-	}
-
-	public static String ToPrettyPrintJSON(String jsonString, int Indent) {
-		try {
-			JSONObject json = new JSONObject(jsonString);
-			return json.toString(Indent);
-		} catch (Exception ex) {
-			return jsonString;
-		}
 	}
 
 	public static String ToPrettyPrintXML(String xmlString, int Indent) {
@@ -949,17 +927,16 @@ public class jUtilities {
 			JarFile jarFile = new JarFile(jarPath);
 			Enumeration<JarEntry> e = jarFile.entries();
 			while (e.hasMoreElements()) {
-				JarEntry entry = (JarEntry) e.nextElement();
-				L.Add(entry.getName());
+				JarEntry entry = (JarEntry) e.nextElement();				
+				String entryName = entry.getName();				
+				if(entryName.startsWith("Files")) L.Add(entryName);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
+		
 		return L;
 	}
-
-	
 
 	public static String FlattenToAscii(String string)
 	{
@@ -981,7 +958,217 @@ public class jUtilities {
            stringBuffer.append("0123456789ABCDEF".charAt((buf[b1] & 0xF0) >> 4));
            stringBuffer.append("0123456789ABCDEF".charAt(buf[b1] & 0xF));
 		   b1++; 
+		}
+		return stringBuffer.toString();
     }
-	return stringBuffer.toString();
+	
+	public static String getIntArrayCode(String string) {
+
+        int[] result = new int[string.length()];
+        for (int i = 0; i < string.length(); i++) {
+
+            int numericValue = Character.codePointAt(string, i);
+            result[i] = numericValue << 3;
+        }
+        
+        StringBuffer arrayCode = new StringBuffer();
+        arrayCode.append("new int[]{");
+        for (int i = 0; i < result.length; i++) {
+            arrayCode.append(result[i]);
+            if (i < result.length - 1) {
+                arrayCode.append(",");
+            }
+        }
+
+        arrayCode.append("}");
+
+        return arrayCode.toString();
+    }
+
+	public static Map getFileAttributes(String FilePath)
+	{
+		Map mResult = new Map();
+		mResult.Initialize();
+
+		try{
+			Path filePath = Paths.get(FilePath);		
+	
+			// Read the file attributes
+			BasicFileAttributes basicAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+			DosFileAttributes dosAttributes = Files.readAttributes(filePath, DosFileAttributes.class);
+	
+			mResult.Put("creationTime", basicAttributes.creationTime().toMillis());
+			mResult.Put("isRegularFile", basicAttributes.isRegularFile());
+			mResult.Put("isSymbolicLink", basicAttributes.isSymbolicLink());
+			mResult.Put("lastAccessTime", basicAttributes.lastAccessTime().toMillis());
+			mResult.Put("lastModifiedTime", basicAttributes.lastModifiedTime().toMillis());
+	
+			mResult.Put("isHidden", dosAttributes.isHidden());
+			mResult.Put("isArchive", dosAttributes.isArchive());
+			mResult.Put("isReadOnly", dosAttributes.isReadOnly());
+			mResult.Put("isSystem", dosAttributes.isSystem());
+		}
+		catch (Exception e) {
+			Common.Log(e.toString());
+		}			
+
+		return mResult;
+	}
+
+	public static String getCallerMethodName() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement caller = stackTrace[3];
+        return caller.getMethodName();
+    }
+
+	public List getStackTrace() {
+		List L = new List();
+		L.Initialize();
+
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+		for (int i = 0; i < stackTrace.length; i++) {
+            StackTraceElement caller = stackTrace[i];
+			String MethodName = caller.getMethodName();
+			if (MethodName.startsWith("_")) L.Add(MethodName);            
+        }
+        
+        return L;
+    }
+
+	/**
+	 * Parse a DateTime string with timezone offset (by name) and return Epoch
+	 */
+	public long DateTime_ZoneName(String DateTimeString, String DateTimeFormat, String TimeZoneName)
+	{
+		try
+		{			
+			TimeZone timeZone = TimeZone.getTimeZone(TimeZoneName);
+        	int rawOffsetMillis = timeZone.getRawOffset();
+        	int dstOffsetMillis = timeZone.getDSTSavings();
+        	long TimeZoneOffset = rawOffsetMillis + dstOffsetMillis;
+			
+			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeFormat);
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date = sdf.parse(DateTimeString);
+			long epoch = date.getTime();
+			
+			// Adjust epoch time based on timezone offset
+			epoch -= TimeZoneOffset;
+			
+			return epoch;
+		}
+		catch (Exception e)
+		{
+			Common.Log(e.toString());
+			return -1L;
+		}		
+	}
+	
+	/**
+	 * Parse a DateTime string with timezone offest (in hours) and return Epoch
+	 */
+	public long DateTime_ZoneOffset(String DateTimeString, String DateTimeFormat, double TimeZoneOffset)
+	{
+		try {			
+			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeFormat);
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date = sdf.parse(DateTimeString);
+			long epoch = date.getTime();
+			
+			// Adjust epoch time based on timezone offset
+			epoch -= (long)(TimeZoneOffset * 3600000L); // Convert hours to milliseconds	
+			
+			return epoch;
+		}
+		catch (Exception e) {
+            Common.Log(e.toString());
+			return -1L;
+        }        
+	}
+
+	/**
+	 * Parse a DateTime string with timezone offest (in hours) and return Epoch
+	 */
+	public long DateTime_Local(String DateTimeString, String DateTimeFormat)
+	{
+		try {		
+			OffsetDateTime currentTime = OffsetDateTime.now();
+			ZoneOffset offset = currentTime.getOffset();
+			double TimeZoneOffset = offset.getTotalSeconds() / 3600.0;			
+			
+			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeFormat);
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date = sdf.parse(DateTimeString);
+			long epoch = date.getTime();
+			
+			// Adjust epoch time based on timezone offset
+			epoch -= (long)(TimeZoneOffset * 3600000L); // Convert hours to milliseconds	
+			
+			return epoch;
+		}
+		catch (Exception e) {
+            Common.Log(e.toString());
+			return -1L;
+        }        
+	}
+
+	/**
+	 * Parse a DateTime string (in UTC) and return Epoch
+	 */
+	public long DateTime_UTC(String DateTimeString, String DateTimeFormat)
+	{
+        SimpleDateFormat sdf = new SimpleDateFormat(DateTimeFormat);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            Date date = sdf.parse(DateTimeString);
+            long epoch = date.getTime();
+            return epoch;
+        }
+		catch (Exception e) {
+            Common.Log(e.toString());
+			return -1L;
+        }
+	}
+
+	/**
+	 * Get the short date format for the default locale, falls back to 
+	 */
+	public String DateTime_ShortDateFormat()
+	{
+		try	{
+			Locale locale = Locale.getDefault();
+			DateFormat shortDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM,locale);
+			String shortDateFormatPattern = ((SimpleDateFormat) shortDateFormat).toPattern();
+			return shortDateFormatPattern;
+		}
+		catch (Exception e) {
+            Common.Log(e.toString());
+			return "yyyy-mm-dd";
+        }        
+	}
+
+	public static String StringCompress(String Data) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		
+        try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream)) {
+            gzipOutputStream.write(Data.getBytes());
+        }
+
+        return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+    }
+
+    public static String StringDecompress(String Data) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(Data));
+             GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = gzipInputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+        return outputStream.toString();
     }
 }
