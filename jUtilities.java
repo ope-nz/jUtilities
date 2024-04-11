@@ -402,7 +402,7 @@ public class jUtilities {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Common.Log("ERROR: " + e.getMessage());
 		}
 
 		return "";
